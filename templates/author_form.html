@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2>{{ action }} Author</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="first_name" class="form-label">First Name *</label>
+                <input type="text" class="form-control" id="first_name" name="first_name"
+                       value="{{ author.first_name if author else '' }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="last_name" class="form-label">Last Name *</label>
+                <input type="text" class="form-control" id="last_name" name="last_name"
+                       value="{{ author.last_name if author else '' }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="birth_year" class="form-label">Birth Year</label>
+                <input type="number" class="form-control" id="birth_year" name="birth_year"
+                       value="{{ author.birth_year if author and author.birth_year else '' }}"
+                       placeholder="e.g. 1965">
+            </div>
+            <button type="submit" class="btn btn-primary">{{ action }} Author</button>
+            <a href="{{ url_for('authors') }}" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
