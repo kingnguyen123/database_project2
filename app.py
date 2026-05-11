@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from models import db, Author, Book
+from models import db, Author, Book, Member
 from datetime import date
 
 app = Flask(__name__)
@@ -33,16 +33,16 @@ def add_author():
 
         errors = []
         if not first_name:
-            errors.append('First name is required.')
+            errors.append('First name is required')
         if not last_name:
-            errors.append('Last name is required.')
+            errors.append('Last name is required')
         if birth_year:
             try:
                 birth_year = int(birth_year)
                 if birth_year < 1000 or birth_year > date.today().year:
-                    errors.append('Birth year must be a valid year.')
+                    errors.append('Birth year must be a valid year')
             except ValueError:
-                errors.append('Birth year must be a number.')
+                errors.append('Birth year must be a number')
         else:
             birth_year = None
 
@@ -71,16 +71,16 @@ def edit_author(author_id):
 
         errors = []
         if not first_name:
-            errors.append('First name is required.')
+            errors.append('First name is required')
         if not last_name:
-            errors.append('Last name is required.')
+            errors.append('Last name is required')
         if birth_year:
             try:
                 birth_year = int(birth_year)
                 if birth_year < 1000 or birth_year > date.today().year:
-                    errors.append('Birth year must be a valid year.')
+                    errors.append('Birth year must be a valid year')
             except ValueError:
-                errors.append('Birth year must be a number.')
+                errors.append('Birth year must be a number')
         else:
             birth_year = None
 
@@ -103,11 +103,11 @@ def edit_author(author_id):
 def delete_author(author_id):
     author = Author.query.get_or_404(author_id)
     if author.books:
-        flash('Cannot delete an author who has books in the system.', 'danger')
+        flash('Cannot delete an author who has books in the system', 'danger')
         return redirect(url_for('authors'))
     db.session.delete(author)
     db.session.commit()
-    flash('Author deleted.', 'success')
+    flash('Author deleted', 'success')
     return redirect(url_for('authors'))
 
 
@@ -136,27 +136,27 @@ def add_book():
 
         errors = []
         if not title:
-            errors.append('Title is required.')
+            errors.append('Title is required')
         if not author_id:
-            errors.append('Please select an author.')
+            errors.append('Please select an author')
         if not total_copies:
-            errors.append('Total copies is required.')
+            errors.append('Total copies is required')
         else:
             try:
                 total_copies = int(total_copies)
                 if total_copies < 1:
-                    errors.append('Total copies must be at least 1.')
+                    errors.append('Total copies must be at least 1')
             except ValueError:
-                errors.append('Total copies must be a whole number.')
+                errors.append('Total copies must be a whole number')
         if not price:
-            errors.append('Price is required.')
+            errors.append('Price is required')
         else:
             try:
                 price = float(price)
                 if price < 0:
-                    errors.append('Price cannot be negative.')
+                    errors.append('Price cannot be negative')
             except ValueError:
-                errors.append('Price must be a number.')
+                errors.append('Price must be a number')
 
         if errors:
             for e in errors:
@@ -195,29 +195,29 @@ def edit_book(book_id):
 
         errors = []
         if not title:
-            errors.append('Title is required.')
+            errors.append('Title is required')
         if not author_id:
-            errors.append('Please select an author.')
+            errors.append('Please select an author')
         if not total_copies:
-            errors.append('Total copies is required.')
+            errors.append('Total copies is required')
         else:
             try:
                 total_copies = int(total_copies)
                 if total_copies < 1:
-                    errors.append('Total copies must be at least 1.')
+                    errors.append('Total copies must be at least 1')
                 elif total_copies < loaned_out:
-                    errors.append(f'Cannot set total copies below {loaned_out} (currently checked out).')
+                    errors.append(f'Cannot set total copies below {loaned_out} (currently checked out)')
             except ValueError:
-                errors.append('Total copies must be a whole number.')
+                errors.append('Total copies must be a whole number')
         if not price:
-            errors.append('Price is required.')
+            errors.append('Price is required')
         else:
             try:
                 price = float(price)
                 if price < 0:
-                    errors.append('Price cannot be negative.')
+                    errors.append('Price cannot be negative')
             except ValueError:
-                errors.append('Price must be a number.')
+                errors.append('Price must be a number')
 
         if errors:
             for e in errors:
@@ -237,15 +237,108 @@ def edit_book(book_id):
     return render_template('book_form.html', action='Edit', book=book, authors=all_authors)
 
 
+@app.route('/members')
+def members():
+    all_members = Member.query.order_by(Member.last_name).all()
+    return render_template('members.html', members=all_members)
+
+
+@app.route('/members/add', methods=['GET', 'POST'])
+def add_member():
+    if request.method == 'POST':
+        first_name = request.form.get('first_name', '').strip()
+        last_name = request.form.get('last_name', '').strip()
+        email = request.form.get('email', '').strip()
+        phone = request.form.get('phone', '').strip()
+
+        errors = []
+        if not first_name:
+            errors.append('First name is required')
+        if not last_name:
+            errors.append('Last name is required')
+        if not email:
+            errors.append('Email is required')
+        elif Member.query.filter_by(email=email).first():
+            errors.append('That email is already registered')
+
+        if errors:
+            for e in errors:
+                flash(e, 'danger')
+            return render_template('member_form.html', action='Add', member=None)
+
+        member = Member(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            phone=phone if phone else None
+        )
+        db.session.add(member)
+        db.session.commit()
+        flash('Member added successfully!', 'success')
+        return redirect(url_for('members'))
+
+    return render_template('member_form.html', action='Add', member=None)
+
+
+@app.route('/members/<int:member_id>/edit', methods=['GET', 'POST'])
+def edit_member(member_id):
+    member = Member.query.get_or_404(member_id)
+
+    if request.method == 'POST':
+        first_name = request.form.get('first_name', '').strip()
+        last_name = request.form.get('last_name', '').strip()
+        email = request.form.get('email', '').strip()
+        phone = request.form.get('phone', '').strip()
+
+        errors = []
+        if not first_name:
+            errors.append('First name is required')
+        if not last_name:
+            errors.append('Last name is required')
+        if not email:
+            errors.append('Email is required')
+        else:
+            existing = Member.query.filter_by(email=email).first()
+            if existing and existing.member_id != member_id:
+                errors.append('That email is already registered to another member')
+
+        if errors:
+            for e in errors:
+                flash(e, 'danger')
+            return render_template('member_form.html', action='Edit', member=member)
+
+        member.first_name = first_name
+        member.last_name = last_name
+        member.email = email
+        member.phone = phone if phone else None
+        db.session.commit()
+        flash('Member updated!', 'success')
+        return redirect(url_for('members'))
+
+    return render_template('member_form.html', action='Edit', member=member)
+
+
+@app.route('/members/<int:member_id>/delete', methods=['POST'])
+def delete_member(member_id):
+    member = Member.query.get_or_404(member_id)
+    if member.loans:
+        flash('Cannot delete a member who has loan records', 'danger')
+        return redirect(url_for('members'))
+    db.session.delete(member)
+    db.session.commit()
+    flash('Member deleted', 'success')
+    return redirect(url_for('members'))
+
+
 @app.route('/books/<int:book_id>/delete', methods=['POST'])
 def delete_book(book_id):
     book = Book.query.get_or_404(book_id)
     if book.total_copies != book.available_copies:
-        flash('Cannot delete a book that has copies currently checked out.', 'danger')
+        flash('Cannot delete a book that has copies currently checked out', 'danger')
         return redirect(url_for('books'))
     db.session.delete(book)
     db.session.commit()
-    flash('Book deleted.', 'success')
+    flash('Book deleted', 'success')
     return redirect(url_for('books'))
 
 
