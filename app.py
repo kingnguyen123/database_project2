@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from models import db, Author
+from models import db, Author, Book
 from datetime import date
 
 app = Flask(__name__)
@@ -109,6 +109,144 @@ def delete_author(author_id):
     db.session.commit()
     flash('Author deleted.', 'success')
     return redirect(url_for('authors'))
+
+
+@app.route('/books')
+def books():
+    all_books = Book.query.join(Author).order_by(Book.title).all()
+    return render_template('books.html', books=all_books)
+
+
+@app.route('/books/<int:book_id>')
+def book_detail(book_id):
+    book = Book.query.get_or_404(book_id)
+    return render_template('book_detail.html', book=book)
+
+
+@app.route('/books/add', methods=['GET', 'POST'])
+def add_book():
+    all_authors = Author.query.order_by(Author.last_name).all()
+
+    if request.method == 'POST':
+        title = request.form.get('title', '').strip()
+        author_id = request.form.get('author_id', '').strip()
+        genre = request.form.get('genre', '').strip()
+        total_copies = request.form.get('total_copies', '').strip()
+        price = request.form.get('price', '').strip()
+
+        errors = []
+        if not title:
+            errors.append('Title is required.')
+        if not author_id:
+            errors.append('Please select an author.')
+        if not total_copies:
+            errors.append('Total copies is required.')
+        else:
+            try:
+                total_copies = int(total_copies)
+                if total_copies < 1:
+                    errors.append('Total copies must be at least 1.')
+            except ValueError:
+                errors.append('Total copies must be a whole number.')
+        if not price:
+            errors.append('Price is required.')
+        else:
+            try:
+                price = float(price)
+                if price < 0:
+                    errors.append('Price cannot be negative.')
+            except ValueError:
+                errors.append('Price must be a number.')
+
+        if errors:
+            for e in errors:
+                flash(e, 'danger')
+            return render_template('book_form.html', action='Add', book=None, authors=all_authors)
+
+        book = Book(
+            title=title,
+            author_id=int(author_id),
+            genre=genre if genre else None,
+            total_copies=total_copies,
+            available_copies=total_copies,
+            price=price
+        )
+        db.session.add(book)
+        db.session.commit()
+        flash('Book added successfully!', 'success')
+        return redirect(url_for('books'))
+
+    return render_template('book_form.html', action='Add', book=None, authors=all_authors)
+
+
+@app.route('/books/<int:book_id>/edit', methods=['GET', 'POST'])
+def edit_book(book_id):
+    book = Book.query.get_or_404(book_id)
+    all_authors = Author.query.order_by(Author.last_name).all()
+
+    if request.method == 'POST':
+        title = request.form.get('title', '').strip()
+        author_id = request.form.get('author_id', '').strip()
+        genre = request.form.get('genre', '').strip()
+        total_copies = request.form.get('total_copies', '').strip()
+        price = request.form.get('price', '').strip()
+
+        loaned_out = book.total_copies - book.available_copies
+
+        errors = []
+        if not title:
+            errors.append('Title is required.')
+        if not author_id:
+            errors.append('Please select an author.')
+        if not total_copies:
+            errors.append('Total copies is required.')
+        else:
+            try:
+                total_copies = int(total_copies)
+                if total_copies < 1:
+                    errors.append('Total copies must be at least 1.')
+                elif total_copies < loaned_out:
+                    errors.append(f'Cannot set total copies below {loaned_out} (currently checked out).')
+            except ValueError:
+                errors.append('Total copies must be a whole number.')
+        if not price:
+            errors.append('Price is required.')
+        else:
+            try:
+                price = float(price)
+                if price < 0:
+                    errors.append('Price cannot be negative.')
+            except ValueError:
+                errors.append('Price must be a number.')
+
+        if errors:
+            for e in errors:
+                flash(e, 'danger')
+            return render_template('book_form.html', action='Edit', book=book, authors=all_authors)
+
+        book.title = title
+        book.author_id = int(author_id)
+        book.genre = genre if genre else None
+        book.available_copies = total_copies - loaned_out
+        book.total_copies = total_copies
+        book.price = price
+        db.session.commit()
+        flash('Book updated!', 'success')
+        return redirect(url_for('books'))
+
+    return render_template('book_form.html', action='Edit', book=book, authors=all_authors)
+
+
+@app.route('/books/<int:book_id>/delete', methods=['POST'])
+def delete_book(book_id):
+    book = Book.query.get_or_404(book_id)
+    if book.total_copies != book.available_copies:
+        flash('Cannot delete a book that has copies currently checked out.', 'danger')
+        return redirect(url_for('books'))
+    db.session.delete(book)
+    db.session.commit()
+    flash('Book deleted.', 'success')
+    return redirect(url_for('books'))
 
 
 if __name__ == '__main__':

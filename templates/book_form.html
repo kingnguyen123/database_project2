@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2>{{ action }} Book</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title *</label>
+                <input type="text" class="form-control" id="title" name="title"
+                       value="{{ book.title if book else '' }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="author_id" class="form-label">Author *</label>
+                <select class="form-select" id="author_id" name="author_id" required>
+                    <option value="">-- Select Author --</option>
+                    {% for author in authors %}
+                        <option value="{{ author.author_id }}"
+                            {{ 'selected' if book and book.author_id == author.author_id else '' }}>
+                            {{ author.full_name() }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="genre" class="form-label">Genre</label>
+                <input type="text" class="form-control" id="genre" name="genre"
+                       value="{{ book.genre if book and book.genre else '' }}"
+                       placeholder="e.g. Fiction, Fantasy, Classic">
+            </div>
+            <div class="mb-3">
+                <label for="total_copies" class="form-label">Total Copies *</label>
+                <input type="number" class="form-control" id="total_copies" name="total_copies"
+                       value="{{ book.total_copies if book else 1 }}" min="1" required>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Price ($) *</label>
+                <input type="number" class="form-control" id="price" name="price"
+                       value="{{ book.price if book else '' }}" step="0.01" min="0" required>
+            </div>
+            <button type="submit" class="btn btn-primary">{{ action }} Book</button>
+            <a href="{{ url_for('books') }}" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
