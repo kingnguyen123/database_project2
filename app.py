@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from models import db, Author, Book, Member
-from datetime import date
+from models import db, Author, Book, Member, Loan
+from datetime import date, timedelta
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///library.db'
@@ -328,6 +328,54 @@ def delete_member(member_id):
     db.session.commit()
     flash('Member deleted', 'success')
     return redirect(url_for('members'))
+
+
+@app.route('/loans')
+def loans():
+    all_loans = Loan.query.order_by(Loan.loan_date.desc()).all()
+    return render_template('loans.html', loans=all_loans, today=date.today())
+
+
+@app.route('/loans/checkout', methods=['GET', 'POST'])
+def checkout():
+    all_members = Member.query.order_by(Member.last_name).all()
+    available_books = Book.query.filter(Book.available_copies > 0).order_by(Book.title).all()
+
+    if request.method == 'POST':
+        member_id = request.form.get('member_id', '').strip()
+        book_id = request.form.get('book_id', '').strip()
+
+        errors = []
+        if not member_id:
+            errors.append('Please select a member')
+        if not book_id:
+            errors.append('Please select a book')
+
+        if not errors:
+            book = Book.query.get(int(book_id))
+            if book.available_copies < 1:
+                errors.append('That book has no available copies')
+
+        if errors:
+            for e in errors:
+                flash(e, 'danger')
+            return render_template('checkout_form.html', members=all_members, books=available_books)
+
+        loan = Loan(
+            book_id=int(book_id),
+            member_id=int(member_id),
+            loan_date=date.today(),
+            due_date=date.today() + timedelta(days=14),
+            status='active'
+        )
+        db.session.add(loan)
+        book.available_copies -= 1
+        db.session.commit()
+
+        flash('Book checked out successfully!', 'success')
+        return redirect(url_for('loans'))
+
+    return render_template('checkout_form.html', members=all_members, books=available_books)
 
 
 @app.route('/books/<int:book_id>/delete', methods=['POST'])

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2>Check Out a Book</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="member_id" class="form-label">Member *</label>
+                <select class="form-select" id="member_id" name="member_id" required>
+                    <option value="">-- Select a Member --</option>
+                    {% for member in members %}
+                    <option value="{{ member.member_id }}">{{ member.full_name() }} ({{ member.email }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="book_id" class="form-label">Book *</label>
+                <select class="form-select" id="book_id" name="book_id" required>
+                    <option value="">-- Select a Book --</option>
+                    {% for book in books %}
+                    <option value="{{ book.book_id }}">{{ book.title }} — {{ book.author.full_name() }} ({{ book.available_copies }} available)</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <p class="text-muted">Loan period: 14 days from today.</p>
+            <button type="submit" class="btn btn-primary">Check Out</button>
+            <a href="{{ url_for('loans') }}" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
