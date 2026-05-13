@@ -1,7 +1,3 @@
--- Library Management System
--- Final Schema in 3rd Normal Form
--- Database: SQLite
-
 CREATE TABLE authors (
     author_id   INTEGER      PRIMARY KEY AUTOINCREMENT,
     first_name  VARCHAR(50)  NOT NULL,

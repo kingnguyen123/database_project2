@@ -15,7 +15,35 @@ with app.app_context():
 
 @app.route('/')
 def dashboard():
-    return render_template('dashboard.html')
+    total_books   = Book.query.count()
+    total_authors = Author.query.count()
+    total_members = Member.query.count()
+    total_loans   = Loan.query.count()
+
+    active_loans  = Loan.query.filter_by(status='active').count()
+    overdue_loans = Loan.query.filter(
+        Loan.status == 'active',
+        Loan.due_date < date.today()
+    ).count()
+
+    avg_price = db.session.query(db.func.avg(Book.price)).scalar()
+    avg_price = round(avg_price, 2) if avg_price else 0
+
+    inventory_value = db.session.query(
+        db.func.sum(Book.price * Book.total_copies)
+    ).scalar()
+    inventory_value = round(inventory_value, 2) if inventory_value else 0
+
+    return render_template('dashboard.html',
+        total_books=total_books,
+        total_authors=total_authors,
+        total_members=total_members,
+        total_loans=total_loans,
+        active_loans=active_loans,
+        overdue_loans=overdue_loans,
+        avg_price=avg_price,
+        inventory_value=inventory_value
+    )
 
 
 @app.route('/authors')
@@ -376,6 +404,23 @@ def checkout():
         return redirect(url_for('loans'))
 
     return render_template('checkout_form.html', members=all_members, books=available_books)
+
+
+@app.route('/loans/<int:loan_id>/return', methods=['POST'])
+def return_book(loan_id):
+    loan = Loan.query.get_or_404(loan_id)
+
+    if loan.status == 'returned':
+        flash('This book has already been returned', 'danger')
+        return redirect(url_for('loans'))
+
+    loan.return_date = date.today()
+    loan.status = 'returned'
+    loan.book.available_copies += 1
+    db.session.commit()
+
+    flash('Book returned successfully!', 'success')
+    return redirect(url_for('loans'))
 
 
 @app.route('/books/<int:book_id>/delete', methods=['POST'])
