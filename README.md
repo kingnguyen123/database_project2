@@ -1,17 +1,20 @@
-# Library Management System
+# Book Club Management System
 
-A web application for managing a library's books, authors, members, and loan records. Built with Python and Flask, it lets library staff track inventory, register members, and handle book checkouts and returns.
+A web application for managing book clubs, members, reading progress, and reviews. Built with Python and Flask, it lets book club organizers track members, schedule meetings, log reading progress, and collect book reviews.
 
 ---
 
 ## Project Description
 
-This app is designed for small library staff who need a simple way to:
+This app is designed for book club organizers who need a simple way to:
 
-- Keep track of books and their authors
-- Register and manage library members
-- Check out books to members and record returns
-- View a dashboard with key stats like active loans, overdue books, and inventory value
+- Manage members and their club memberships
+- Keep a catalog of books being read
+- Create and manage book clubs
+- Schedule and track club meetings
+- Log reading progress for each member
+- Collect and display book reviews and ratings
+- View a dashboard with key stats about the club activity
 
 The database is normalized to **3rd Normal Form** — see [NORMALIZATION.md](NORMALIZATION.md) for the full report.
 
@@ -40,8 +43,8 @@ cd database_project
 **2. Create and activate a virtual environment**
 ```bash
 # Windows
-python -m venv venv
-venv\Scripts\activate
+py -m venv venv
+venv\Scripts\Activate.ps1
 
 # Mac / Linux
 python -m venv venv
@@ -57,7 +60,7 @@ pip install -r requirements.txt
 
 ## Database Setup
 
-The app uses SQLite. The database file (`library.db`) is created automatically the first time you run the app — no manual setup needed.
+The app uses SQLite. The database file (`bookclub.db`) is created automatically the first time you run the app — no manual setup needed.
 
 If you want to review the schema, the SQL file is included in the repository:
 
@@ -65,7 +68,7 @@ If you want to review the schema, the SQL file is included in the repository:
 schema.sql
 ```
 
-It contains all four `CREATE TABLE` statements reflecting the final 3NF structure.
+It contains all seven `CREATE TABLE` statements reflecting the final 3NF structure.
 
 ---
 
@@ -73,7 +76,7 @@ It contains all four `CREATE TABLE` statements reflecting the final 3NF structur
 
 **Start the server**
 ```bash
-python app.py
+py app.py
 ```
 
 Then open your browser and go to: `http://127.0.0.1:5000`
@@ -83,31 +86,87 @@ Then open your browser and go to: `http://127.0.0.1:5000`
 ## Features
 
 ### Dashboard
-The home page displays a live summary of the library:
-- Total books, authors, members, and loans
-- Number of active and overdue loans
-- Average book price and total inventory value
+The home page displays a live summary of all club activity:
+- Total members, books, clubs, and reviews
+- Number of books completed and currently being read
+- Average book rating across all reviews
 
 ### Books
-- View all books with availability status
+- View all books with author, genre, publish year, and page count
 - Add, edit, and delete books
-- Each book is linked to an author
+- Click a book to see its full detail page with all reviews
 
-### Authors
-- View all authors and how many books they have
-- Add, edit, and delete authors
-- An author cannot be deleted if they have books in the system
+### Clubs
+- View all clubs with member count and founding date
+- Add, edit, and delete clubs
+- Click a club to see its members and scheduled meetings
 
 ### Members
-- View all registered members
+- View all registered members and how many clubs they belong to
 - Add, edit, and delete members
-- A member cannot be deleted if they have any loan history
 
-### Loans
-- Check out a book to a member (14-day loan period)
-- Return a book when it comes back
-- See loan status: Active, Overdue, or Returned
-- Checkout and return each use a database transaction — both the loan record and the book's availability are updated together
+### Memberships
+- Add a member to a club with a role (member or admin)
+- Remove a member from a club from the club detail page
 
+### Reading Progress
+- Log how many pages a member has read for a book
+- Set reading status: Not Started, In Progress, or Completed
+- Completion percentage is calculated and saved automatically in a single transaction
 
+### Reviews
+- Add a star rating (1–5) and written review for any book
+- View all reviews sorted by newest first
+- Delete reviews
 
+### Meetings
+- Schedule a meeting for a club tied to a specific book
+- Add location and discussion notes
+- View all upcoming and past meetings
+
+---
+
+## Project Structure
+
+```
+database_project/
+├── app.py              # All Flask routes
+├── models.py           # SQLAlchemy models
+├── schema.sql          # SQL schema (3NF)
+├── requirements.txt    # Python dependencies
+├── NORMALIZATION.md    # Normalization report
+├── AI_LOG.md           # AI assistance log
+├── static/
+│   └── style.css
+└── templates/
+    ├── base.html
+    ├── dashboard.html
+    ├── books.html
+    ├── book_form.html
+    ├── book_detail.html
+    ├── clubs.html
+    ├── club_form.html
+    ├── club_detail.html
+    ├── members.html
+    ├── member_form.html
+    ├── join_form.html
+    ├── progress.html
+    ├── progress_form.html
+    ├── reviews.html
+    ├── review_form.html
+    ├── meetings.html
+    └── meeting_form.html
+```
+
+---
+
+## Deliverables
+
+| Deliverable | Description | File |
+|---|---|---|
+| Git Repository | Full commit history with `.gitignore` | GitHub URL |
+| Source Code | All Python, HTML, and CSS files | `app.py`, `models.py`, `templates/`, `static/` |
+| 3NF Report | Full normalization documentation | [NORMALIZATION.md](NORMALIZATION.md) |
+| README.md | Setup and usage instructions | [README.md](README.md) |
+| SQL Schema | All seven `CREATE TABLE` statements in 3NF | [schema.sql](schema.sql) |
+| AI Log | Documentation of AI assistance used | [AI_LOG.md](AI_LOG.md) |
