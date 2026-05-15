@@ -93,8 +93,7 @@ BOOK_CLUB_RECORD (Unnormalized Flat Table)
 ```
 
 **My Modification:**
-I used these ideas as a guide to analyze my own schema from Project 3. I applied the concepts to my specific tables (members, books, clubs, memberships, reading_progress, meetings, reviews) and confirmed that my design already satisfied 3NF. I then wrote the NORMALIZATION.md documentation based on my own understanding of how the decomposition applied to this project.
-
+I used these ideas as a guide to analyze my own schema from Project 2. I applied the concepts to my specific tables (embers, books, clubs, memberships, reading_progress, meetings, reviews and confirmed that my design already satisfied 3NF.
 ---
 
 ## Frontend: HTML Templates
@@ -135,7 +134,7 @@ I read through both documents and verified that they accurately described my act
 "Check the syntax and logic of the code I just implemented"
 
 **AI Output:**
-Claude reviewed the code and identified issues including typos in the original SQL schema (wrong column names in foreign keys for reviews and meetings tables, a misspelled table name), and suggested fixes to align the Flask models with the correct intended structure.
+Claude reviewed the code and identified issues including typos in the original SQL schema wrong column names in foreign keys for reviews and meetings tables, a misspelled table name, and suggested fixes to align the Flask models with the correct intended structure.
 
 **My Modification:**
 I read through each suggestion and verified whether it applied to my specific use case before accepting it. I confirmed the foreign key corrections were accurate by cross-referencing with my original SQL insert statements.
