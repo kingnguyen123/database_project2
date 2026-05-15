@@ -157,16 +157,3 @@ database_project/
     ├── meetings.html
     └── meeting_form.html
 ```
-
----
-
-## Deliverables
-
-| Deliverable | Description | File |
-|---|---|---|
-| Git Repository | Full commit history with `.gitignore` | GitHub URL |
-| Source Code | All Python, HTML, and CSS files | `app.py`, `models.py`, `templates/`, `static/` |
-| 3NF Report | Full normalization documentation | [NORMALIZATION.md](NORMALIZATION.md) |
-| README.md | Setup and usage instructions | [README.md](README.md) |
-| SQL Schema | All seven `CREATE TABLE` statements in 3NF | [schema.sql](schema.sql) |
-| AI Log | Documentation of AI assistance used | [AI_LOG.md](AI_LOG.md) |
