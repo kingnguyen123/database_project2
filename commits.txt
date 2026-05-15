@@ -1,3 +1,5 @@
+c87d43c updated Normarlization, readme and AI_log
+5ae20b0 rebuild app for book club schema
 cb0b380	added AI_log
 15faeb5	added the dashboard
 4d14c6a	implemented loan checkout with transaction
