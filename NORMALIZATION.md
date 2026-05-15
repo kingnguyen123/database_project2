@@ -60,7 +60,7 @@ If the only review for a book is deleted, all information about that book is per
 
 ## 3. Decomposition Steps
 
-### Step 1 — Check 1st Normal Form (1NF)
+### Step 1: Check 1st Normal Form (1NF)
 **Rule:** All column values must be atomic and every row must be uniquely identifiable.
 
 The flat `BOOK_CLUB_RECORD` table satisfies 1NF — all values are atomic and the combination of member, book, club, and date can identify each row.
@@ -69,27 +69,27 @@ The flat `BOOK_CLUB_RECORD` table satisfies 1NF — all values are atomic and th
 
 ---
 
-### Step 2 — Check 2nd Normal Form (2NF)
+### Step 2: Check 2nd Normal Form (2NF)
 **Rule:** Every non-key column must depend on the whole primary key, not just part of it.
 
 With a composite key across member, book, club, and date, many columns only partially depend on part of the key. For example, `book_author` only depends on the book, not on the member or club. `club_city` only depends on the club.
 
-**Result: Fails 2NF — partial dependencies found**
+**Result: Fails 2NF, partial dependencies found**
 
 ---
 
-### Step 3 — Check 3rd Normal Form (3NF)
+### Step 3: Check 3rd Normal Form (3NF)
 **Rule:** No non-key column should depend on another non-key column.
 
 Even after resolving partial dependencies, transitive dependencies remain:
 - `member_id → member_email → member details` (email is also a unique identifier for a member)
 - `book_isbn → book_title → book details` (ISBN uniquely identifies a book)
 
-**Result: Fails 3NF — transitive dependencies found**
+**Result: Fails 3NF, transitive dependencies found**
 
 ---
 
-### Step 4 — Decompose into 3NF
+### Step 4: Decompose into 3NF
 
 **Extract Members**
 ```
@@ -106,22 +106,22 @@ books(book_id PK, title, author, genre, publish_year, total_pages, isbn, created
 clubs(club_id PK, club_name, description, city, founded_date, created_at)
 ```
 
-**Extract Memberships** — resolves the many-to-many between members and clubs
+**Extract Memberships**  resolves the many-to-many between members and clubs
 ```
 memberships(membership_id PK, member_id FK, club_id FK, role, created_at)
 ```
 
-**Extract Reading Progress** — tracks each member's progress on each book
+**Extract Reading Progress**  tracks each member's progress on each book
 ```
 reading_progress(progress_id PK, member_id FK, book_id FK, pages_read, status, started_date, finished_date, last_updated, completion_percentage)
 ```
 
-**Extract Meetings** — ties a club to a book on a specific date
+**Extract Meetings**  ties a club to a book on a specific date
 ```
 meetings(meeting_id PK, club_id FK, book_id FK, meeting_date, location, notes, created_at)
 ```
 
-**Extract Reviews** — a member's rating and review of a book
+**Extract Reviews**  a member's rating and review of a book
 ```
 reviews(review_id PK, member_id FK, book_id FK, rating, review_text, created_at)
 ```
