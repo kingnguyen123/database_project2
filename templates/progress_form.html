@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2>Log Reading Progress</h2>
+        <p class="text-muted">If a record already exists for this member and book, it will be updated.</p>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="member_id" class="form-label">Member *</label>
+                <select class="form-select" id="member_id" name="member_id" required>
+                    <option value="">-- Select a Member --</option>
+                    {% for member in members %}
+                    <option value="{{ member.member_id }}">{{ member.full_name() }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="book_id" class="form-label">Book *</label>
+                <select class="form-select" id="book_id" name="book_id" required>
+                    <option value="">-- Select a Book --</option>
+                    {% for book in books %}
+                    <option value="{{ book.book_id }}">{{ book.title }} ({{ book.total_pages if book.total_pages else '?' }} pages)</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="pages_read" class="form-label">Pages Read</label>
+                <input type="number" class="form-control" id="pages_read" name="pages_read"
+                       value="0" min="0" placeholder="e.g. 150">
+            </div>
+            <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status" name="status">
+                    <option value="not_started">Not Started</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="started_date" class="form-label">Started Date</label>
+                <input type="date" class="form-control" id="started_date" name="started_date">
+            </div>
+            <div class="mb-3">
+                <label for="finished_date" class="form-label">Finished Date</label>
+                <input type="date" class="form-control" id="finished_date" name="finished_date">
+            </div>
+            <button type="submit" class="btn btn-primary">Save Progress</button>
+            <a href="{{ url_for('progress') }}" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

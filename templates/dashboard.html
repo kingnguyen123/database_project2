@@ -3,82 +3,72 @@
 {% block content %}
 <h2 class="mb-4">Dashboard</h2>
 
-<!-- Library counts -->
+<!-- Totals row -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
         <div class="card text-center shadow-sm">
             <div class="card-body">
-                <h1 class="display-5 fw-bold text-primary">{{ total_books }}</h1>
-                <p class="card-text text-muted">Total Books</p>
-                <a href="{{ url_for('books') }}" class="btn btn-sm btn-outline-primary">View All</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h1 class="display-5 fw-bold text-secondary">{{ total_authors }}</h1>
-                <p class="card-text text-muted">Total Authors</p>
-                <a href="{{ url_for('authors') }}" class="btn btn-sm btn-outline-secondary">View All</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h1 class="display-5 fw-bold text-success">{{ total_members }}</h1>
+                <h1 class="display-5 fw-bold text-primary">{{ total_members }}</h1>
                 <p class="card-text text-muted">Total Members</p>
-                <a href="{{ url_for('members') }}" class="btn btn-sm btn-outline-success">View All</a>
+                <a href="{{ url_for('members') }}" class="btn btn-sm btn-outline-primary">View All</a>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card text-center shadow-sm">
             <div class="card-body">
-                <h1 class="display-5 fw-bold text-warning">{{ total_loans }}</h1>
-                <p class="card-text text-muted">Total Loans</p>
-                <a href="{{ url_for('loans') }}" class="btn btn-sm btn-outline-warning">View All</a>
+                <h1 class="display-5 fw-bold text-success">{{ total_books }}</h1>
+                <p class="card-text text-muted">Total Books</p>
+                <a href="{{ url_for('books') }}" class="btn btn-sm btn-outline-success">View All</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h1 class="display-5 fw-bold text-warning">{{ total_clubs }}</h1>
+                <p class="card-text text-muted">Total Clubs</p>
+                <a href="{{ url_for('clubs') }}" class="btn btn-sm btn-outline-warning">View All</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h1 class="display-5 fw-bold text-secondary">{{ total_reviews }}</h1>
+                <p class="card-text text-muted">Total Reviews</p>
+                <a href="{{ url_for('reviews') }}" class="btn btn-sm btn-outline-secondary">View All</a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Loan status + financials -->
+<!-- Reading progress + avg rating row -->
 <div class="row g-3">
     <div class="col-md-4">
         <div class="card text-center shadow-sm">
             <div class="card-body">
-                <h1 class="display-5 fw-bold text-primary">{{ active_loans }}</h1>
-                <p class="card-text text-muted">Active Loans</p>
+                <h1 class="display-5 fw-bold text-success">{{ completed }}</h1>
+                <p class="card-text text-muted">Books Completed</p>
+                <a href="{{ url_for('progress') }}" class="btn btn-sm btn-outline-success">View Progress</a>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="card text-center shadow-sm">
             <div class="card-body">
-                <h1 class="display-5 fw-bold {% if overdue_loans > 0 %}text-danger{% else %}text-success{% endif %}">
-                    {{ overdue_loans }}
-                </h1>
-                <p class="card-text text-muted">Overdue Loans</p>
+                <h1 class="display-5 fw-bold text-primary">{{ in_progress }}</h1>
+                <p class="card-text text-muted">Currently Reading</p>
+                <a href="{{ url_for('progress') }}" class="btn btn-sm btn-outline-primary">View Progress</a>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="card text-center shadow-sm">
             <div class="card-body">
-                <h1 class="display-5 fw-bold text-success">${{ "%.2f"|format(avg_price) }}</h1>
-                <p class="card-text text-muted">Avg Book Price</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row g-3 mt-1">
-    <div class="col-md-12">
-        <div class="card shadow-sm">
-            <div class="card-body text-center">
-                <h3 class="fw-bold text-dark">${{ "%.2f"|format(inventory_value) }}</h3>
-                <p class="card-text text-muted">Total Inventory Value (price × copies for all books)</p>
+                <h1 class="display-5 fw-bold text-warning">{{ "%.2f"|format(avg_rating) }} / 5</h1>
+                <p class="card-text text-muted">Avg Book Rating</p>
+                <a href="{{ url_for('reviews') }}" class="btn btn-sm btn-outline-warning">View Reviews</a>
             </div>
         </div>
     </div>

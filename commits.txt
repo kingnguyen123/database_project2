@@ -1,0 +1,7 @@
+cb0b380	added AI_log
+15faeb5	added the dashboard
+4d14c6a	implemented loan checkout with transaction
+88f9aec	added members CRUD
+ba0ead7	added NORMALIZATION.md and schema.sql
+370d423	Add authors CRUD and frontend UI
+2e951b9	added initial setup

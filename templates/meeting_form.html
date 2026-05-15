@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2>Add Meeting</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="club_id" class="form-label">Club *</label>
+                <select class="form-select" id="club_id" name="club_id" required>
+                    <option value="">-- Select a Club --</option>
+                    {% for club in clubs %}
+                    <option value="{{ club.club_id }}">{{ club.club_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="book_id" class="form-label">Book *</label>
+                <select class="form-select" id="book_id" name="book_id" required>
+                    <option value="">-- Select a Book --</option>
+                    {% for book in books %}
+                    <option value="{{ book.book_id }}">{{ book.title }} — {{ book.author }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="meeting_date" class="form-label">Meeting Date *</label>
+                <input type="date" class="form-control" id="meeting_date" name="meeting_date" required>
+            </div>
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="location" name="location"
+                       placeholder="e.g. Wichita Public Library Room A">
+            </div>
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes</label>
+                <textarea class="form-control" id="notes" name="notes"
+                          rows="3" placeholder="Discussion notes or agenda..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Meeting</button>
+            <a href="{{ url_for('meetings') }}" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

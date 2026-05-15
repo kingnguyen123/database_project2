@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2>{{ action }} Club</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="club_name" class="form-label">Club Name *</label>
+                <input type="text" class="form-control" id="club_name" name="club_name"
+                       value="{{ club.club_name if club else '' }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description"
+                          rows="3" placeholder="What is this club about?">{{ club.description if club and club.description else '' }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="city" class="form-label">City</label>
+                <input type="text" class="form-control" id="city" name="city"
+                       value="{{ club.city if club and club.city else '' }}"
+                       placeholder="e.g. Wichita">
+            </div>
+            <div class="mb-3">
+                <label for="founded_date" class="form-label">Founded Date *</label>
+                <input type="date" class="form-control" id="founded_date" name="founded_date"
+                       value="{{ club.founded_date if club else '' }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">{{ action }} Club</button>
+            <a href="{{ url_for('clubs') }}" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -11,32 +11,34 @@
                        value="{{ book.title if book else '' }}" required>
             </div>
             <div class="mb-3">
-                <label for="author_id" class="form-label">Author *</label>
-                <select class="form-select" id="author_id" name="author_id" required>
-                    <option value="">-- Select Author --</option>
-                    {% for author in authors %}
-                        <option value="{{ author.author_id }}"
-                            {{ 'selected' if book and book.author_id == author.author_id else '' }}>
-                            {{ author.full_name() }}
-                        </option>
-                    {% endfor %}
-                </select>
+                <label for="author" class="form-label">Author *</label>
+                <input type="text" class="form-control" id="author" name="author"
+                       value="{{ book.author if book else '' }}"
+                       placeholder="e.g. Matt Haig" required>
             </div>
             <div class="mb-3">
                 <label for="genre" class="form-label">Genre</label>
                 <input type="text" class="form-control" id="genre" name="genre"
                        value="{{ book.genre if book and book.genre else '' }}"
-                       placeholder="e.g. Fiction, Fantasy, Classic">
+                       placeholder="e.g. Fiction, Sci-Fi, Memoir">
             </div>
             <div class="mb-3">
-                <label for="total_copies" class="form-label">Total Copies *</label>
-                <input type="number" class="form-control" id="total_copies" name="total_copies"
-                       value="{{ book.total_copies if book else 1 }}" min="1" required>
+                <label for="publish_year" class="form-label">Publish Year</label>
+                <input type="number" class="form-control" id="publish_year" name="publish_year"
+                       value="{{ book.publish_year if book and book.publish_year else '' }}"
+                       placeholder="e.g. 2021">
             </div>
             <div class="mb-3">
-                <label for="price" class="form-label">Price ($) *</label>
-                <input type="number" class="form-control" id="price" name="price"
-                       value="{{ book.price if book else '' }}" step="0.01" min="0" required>
+                <label for="total_pages" class="form-label">Total Pages</label>
+                <input type="number" class="form-control" id="total_pages" name="total_pages"
+                       value="{{ book.total_pages if book and book.total_pages else '' }}"
+                       min="1" placeholder="e.g. 320">
+            </div>
+            <div class="mb-3">
+                <label for="isbn" class="form-label">ISBN</label>
+                <input type="text" class="form-control" id="isbn" name="isbn"
+                       value="{{ book.isbn if book and book.isbn else '' }}"
+                       placeholder="e.g. 978-0525559474">
             </div>
             <button type="submit" class="btn btn-primary">{{ action }} Book</button>
             <a href="{{ url_for('books') }}" class="btn btn-secondary ms-2">Cancel</a>
