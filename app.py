@@ -13,7 +13,7 @@ with app.app_context():
     db.create_all()
 
 
-# ── Dashboard ──────────────────────────────────────────────────────────────────
+# Dashboard 
 @app.route('/')
 def dashboard():
     total_members = Member.query.count()
@@ -38,7 +38,7 @@ def dashboard():
     )
 
 
-# ── Members ────────────────────────────────────────────────────────────────────
+# Members
 @app.route('/members')
 def members():
     all_members = Member.query.order_by(Member.last_name).all()
@@ -130,7 +130,7 @@ def delete_member(member_id):
     return redirect(url_for('members'))
 
 
-# ── Books ──────────────────────────────────────────────────────────────────────
+#Books
 @app.route('/books')
 def books():
     all_books = Book.query.order_by(Book.title).all()
@@ -262,7 +262,7 @@ def delete_book(book_id):
     return redirect(url_for('books'))
 
 
-# ── Clubs ──────────────────────────────────────────────────────────────────────
+#Clubs
 @app.route('/clubs')
 def clubs():
     all_clubs = Club.query.order_by(Club.club_name).all()
@@ -359,7 +359,7 @@ def delete_club(club_id):
     return redirect(url_for('clubs'))
 
 
-# ── Memberships ────────────────────────────────────────────────────────────────
+#Memberships
 @app.route('/memberships/join', methods=['GET', 'POST'])
 def join_club():
     all_members = Member.query.order_by(Member.last_name).all()
@@ -410,7 +410,7 @@ def remove_member(membership_id):
     return redirect(url_for('club_detail', club_id=club_id))
 
 
-# ── Reading Progress (transaction) ─────────────────────────────────────────────
+#Reading Progress
 @app.route('/progress')
 def progress():
     all_progress = ReadingProgress.query.order_by(ReadingProgress.last_updated.desc()).all()
@@ -449,13 +449,12 @@ def log_progress():
 
         book = Book.query.get(int(book_id))
 
-        # calculate completion percentage — transaction step 1
+       
         if book.total_pages and book.total_pages > 0:
             completion = round((pages_read / book.total_pages) * 100, 2)
         else:
             completion = None
 
-        # update pages_read, status, and completion_percentage all in one commit
         progress = ReadingProgress.query.filter_by(
             member_id=int(member_id), book_id=int(book_id)
         ).first()
@@ -486,7 +485,7 @@ def log_progress():
     return render_template('progress_form.html', members=all_members, books=all_books)
 
 
-# ── Reviews ────────────────────────────────────────────────────────────────────
+#Reviews
 @app.route('/reviews')
 def reviews():
     all_reviews = Review.query.order_by(Review.created_at.desc()).all()
@@ -547,7 +546,7 @@ def delete_review(review_id):
     return redirect(url_for('reviews'))
 
 
-# ── Meetings ───────────────────────────────────────────────────────────────────
+#Meetings
 @app.route('/meetings')
 def meetings():
     all_meetings = Meeting.query.order_by(Meeting.meeting_date.desc()).all()
