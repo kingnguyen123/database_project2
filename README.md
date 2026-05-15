@@ -60,9 +60,7 @@ pip install -r requirements.txt
 
 ## Database Setup
 
-The app uses SQLite. The database file (`bookclub.db`) is created automatically the first time you run the app — no manual setup needed.
-
-If you want to review the schema, the SQL file is included in the repository:
+The app uses SQLite
 
 ```
 schema.sql
