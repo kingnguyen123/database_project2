@@ -128,6 +128,56 @@ loans(loan_id PK, book_id FK, member_id FK, loan_date, due_date, return_date, st
 
 ---
 
+### Decomposition Tree
+
+```
+LIBRARY_RECORD (Unnormalized Flat Table)
+│
+│   loan_id, loan_date, due_date, return_date, status
+│   book_title, book_genre, book_total_copies, book_available_copies, book_price
+│   author_first_name, author_last_name, author_birth_year
+│   member_first_name, member_last_name, member_email, member_phone, member_join_date
+│
+│   ↓ Remove author columns → authors table
+│   ↓ Remove book columns   → books table (references authors)
+│   ↓ Remove member columns → members table
+│   ↓ Keep only loan data   → loans table (references books + members)
+│
+├── authors
+│   ├── author_id  (PK)
+│   ├── first_name
+│   ├── last_name
+│   └── birth_year
+│
+├── books
+│   ├── book_id        (PK)
+│   ├── title
+│   ├── author_id      (FK → authors)
+│   ├── genre
+│   ├── total_copies
+│   ├── available_copies
+│   └── price
+│
+├── members
+│   ├── member_id  (PK)
+│   ├── first_name
+│   ├── last_name
+│   ├── email      (UNIQUE)
+│   ├── phone
+│   └── join_date
+│
+└── loans
+    ├── loan_id     (PK)
+    ├── book_id     (FK → books)
+    ├── member_id   (FK → members)
+    ├── loan_date
+    ├── due_date
+    ├── return_date
+    └── status
+```
+
+---
+
 ## 4. Final Relational Schema (3NF)
 
 ```
